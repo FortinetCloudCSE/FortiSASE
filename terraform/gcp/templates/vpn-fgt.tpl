@@ -1,6 +1,6 @@
-config sys glo
+config system global
     set admin-sport ${admin_port}
-    set hostname "BRANCH-FGT"
+    set hostname ${fgt_name}
     set admintimeout 60
 end
 config system admin
@@ -10,8 +10,8 @@ config system admin
 end
 config router static
     edit 1
-        set dst ${cidrhost(br_subnet_cidr_port1, 0)}/24
-        set gateway ${cidrhost(br_subnet_cidr_port1, 1)}
+        set dst ${cidrhost(subnet_cidr_port1, 0)}/24
+        set gateway ${cidrhost(subnet_cidr_port1, 1)}
         set device "port2"
     next
 end
@@ -23,32 +23,32 @@ config system interface
         set description "trust"
         set allowaccess ping https
     next
-    edit "toHub"
+    edit ${vpn_direction}
         set vdom "root"
-        set ip 169.254.254.2 255.255.255.255
+        set ip ${router_id} 255.255.255.255
         set allowaccess ping https http
         set type tunnel
-        set remote-ip 169.254.254.1 255.255.255.255
+        set remote-ip ${remote_ip} 255.255.255.255
         set interface "port1"
     next
 end
 config vpn ipsec phase1-interface
-    edit "toHub"
+    edit ${vpn_direction}
         set interface "port1"
         set peertype any
         set net-device disable
         set proposal aes128-sha256 aes256-sha256 aes128-sha1 aes256-sha1
-        set comments "VPN: toHub"
+        set comments "VPN: ${vpn_direction}"
         set wizard-type static-fortigate
-        set remote-gw ${hub_fgt_ip}
+        set remote-gw ${peer_fgt_ip}
         set psksecret Fortinet1!
     next
 end
 config vpn ipsec phase2-interface
-    edit "toHub"
-        set phase1name "toHub"
+    edit ${vpn_direction}
+        set phase1name ${vpn_direction}
         set proposal aes128-sha1 aes256-sha1 aes128-sha256 aes256-sha256 aes128gcm aes256gcm chacha20poly1305
-        set comments "VPN: toHub"
+        set comments "VPN: ${vpn_direction}"
         set src-addr-type name
         set dst-addr-type name
         set src-name "all"
@@ -56,24 +56,24 @@ config vpn ipsec phase2-interface
     next
 end
 config router bgp
-    set as 65252
-    set router-id 169.254.254.2
+    set as ${local_as}
+    set router-id ${router_id}
     config neighbor
-        edit "169.254.254.1"
+        edit "${remote_ip}"
             set next-hop-self enable
             set soft-reconfiguration enable
-            set remote-as 65251
+            set remote-as ${remote_as}
         next
     end
     config network
         edit 1
-            set prefix ${cidrhost(br_subnet_cidr_port1, 0)}/24
+            set prefix ${cidrhost(subnet_cidr_port1, 0)}/24
         next
     end
 end
 config firewall vip
     edit "windows-server"
-        set mappedip ${br_webserver_internal_ip}
+        set mappedip ${webserver_internal_ip}
         set extintf "port1"
         set portforward enable
         set extport 50102
@@ -82,26 +82,26 @@ config firewall vip
 end
 config firewall policy
     edit 1
-        set name "ToHub_local"
+        set name "${vpn_direction}_local"
         set srcintf "port2"
-        set dstintf "toHub"
+        set dstintf ${vpn_direction}
         set action accept
         set srcaddr "all"
         set dstaddr "all"
         set schedule "always"
         set service "ALL"
-        set comments "VPN: toHub"
+        set comments "VPN: ${vpn_direction}}"
     next
     edit 2
-        set name "ToHub_remote"
-        set srcintf "toHub"
+        set name "${vpn_direction}_remote"
+        set srcintf ${vpn_direction}
         set dstintf "port2"
         set action accept
         set srcaddr "all"
         set dstaddr "all"
         set schedule "always"
         set service "ALL"
-        set comments "VPN: toHub"
+        set comments "VPN: ${vpn_direction}"
     next
     edit 3
         set name "Inbound"
