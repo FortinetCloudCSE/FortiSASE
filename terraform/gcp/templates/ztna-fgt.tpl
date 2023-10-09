@@ -1,6 +1,6 @@
-config sys glo
+config system global
     set admin-sport ${admin_port}
-    set hostname "ZTNA-FGT"
+    set hostname ${fgt_name}
     set admintimeout 60
 end
 config system admin
@@ -10,14 +10,14 @@ config system admin
 end
 config router static
     edit 1
-        set dst ${cidrhost(ztna_subnet_cidr_port1, 0)}/24
-        set gateway ${cidrhost(ztna_subnet_cidr_port1, 1)}
+        set dst ${cidrhost(subnet_cidr_port1, 0)}/24
+        set gateway ${cidrhost(subnet_cidr_port1, 1)}
         set device "port2"
     next
 end
 config firewall vip
     edit "windows-server"
-        set mappedip ${ztna_webserver_internal_ip}
+        set mappedip ${webserver_internal_ip}
         set extintf "port1"
         set portforward enable
         set extport 50102

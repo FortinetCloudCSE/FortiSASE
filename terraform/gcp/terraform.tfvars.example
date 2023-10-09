@@ -1,0 +1,24 @@
+credentials_file_path = "credentials_file_path.json"
+service_account       = "sa@project.iam.gserviceaccount.com"
+project               = "project_name"
+region                = "region_name"
+zone                  = "zone_name"
+
+# Prefixed to all resources
+prefix = "resource_prefix"
+
+# FortiGate image and instance type
+# 7.4.0 PAYG is projects/fortigcp-project-001/global/images/fortinet-fgtondemand-740-20230512-001-w-license
+fortigate_vm_image     = "projects/fortigcp-project-001/global/images/fortinet-fgtondemand-740-20230512-001-w-license"
+fortigate_machine_type = "n2-standard-2"
+fortigate_license_files = {
+  hub_fgt_instance    = { name = null }
+  branch_fgt_instance = { name = null }
+  ztna_fgt_instance   = { name = null }
+}
+admin_port = 8443
+fgt_password = "fortinet"
+
+# Windows image and instance type
+windows_vm_image     = "projects/windows-cloud/global/images/windows-server-2019-dc-v20230809"
+windows_machine_type = "n1-standard-1"
