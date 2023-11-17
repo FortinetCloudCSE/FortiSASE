@@ -292,7 +292,7 @@ locals {
       machine_type = local.windows_machine_type
 
       can_ip_forward = "false"
-      tags           = ["hub-windows-server"]
+      tags           = ["hub-windows-server","hub-trust"]
 
       boot_disk_initialize_params_image = local.windows_vm_image
 
@@ -318,7 +318,7 @@ locals {
       machine_type = local.windows_machine_type
 
       can_ip_forward = "false"
-      tags           = ["branch-windows-server"]
+      tags           = ["branch-windows-server","branch-trust"]
 
       boot_disk_initialize_params_image = local.windows_vm_image
 
@@ -344,7 +344,7 @@ locals {
       machine_type = local.windows_machine_type
 
       can_ip_forward = "false"
-      tags           = ["ztna-windows-server"]
+      tags           = ["ztna-windows-server","ztna-trust"]
 
       boot_disk_initialize_params_image = local.windows_vm_image
 
@@ -526,6 +526,29 @@ locals {
       remote_as             = null
       router_id             = null
       remote_ip             = null
+    }
+  }
+  trust_routes = {
+    "hub-trust-route" = {
+      name = "${local.prefix}hub-trust-route-${random_string.string.result}"
+      network = google_compute_network.compute_network["hub-trust-vpc"].name
+      next_hop_ip = google_compute_instance.compute_instance["hub_fgt_instance"].network_interface[1].network_ip
+      zone = local.zone
+      tags = ["hub-trust"]
+    }
+    "branch-trust-route" = {
+      name = "${local.prefix}branch-trust-route-${random_string.string.result}"
+      network = google_compute_network.compute_network["branch-trust-vpc"].name
+      next_hop_ip = google_compute_instance.compute_instance["branch_fgt_instance"].network_interface[1].network_ip
+      zone = local.zone
+      tags = ["branch-trust"]
+    }
+    "ztna-trust-route" = {
+      name = "${local.prefix}ztna-trust-route-${random_string.string.result}"
+      network = google_compute_network.compute_network["ztna-trust-vpc"].name
+      next_hop_ip = google_compute_instance.compute_instance["ztna_fgt_instance"].network_interface[1].network_ip
+      zone = local.zone
+      tags = ["ztna-trust"]
     }
   }
 }
