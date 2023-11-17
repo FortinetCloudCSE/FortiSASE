@@ -105,3 +105,14 @@ resource "google_compute_instance" "compute_instance" {
 
   allow_stopping_for_update = each.value.allow_stopping_for_update
 }
+
+resource "google_compute_route" "default-trust" {
+  for_each = local.trust_routes
+  name        = each.value.name
+  dest_range  = "0.0.0.0/0"
+  network     = each.value.network
+  next_hop_ip = each.value.next_hop_ip
+  priority    = 100
+  tags = each.value.tags
+
+}

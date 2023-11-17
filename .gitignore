@@ -8,3 +8,4 @@ package.json
 .terraform/
 terraform.tfstate*
 terraform.tfvars
+terraform.lock*
