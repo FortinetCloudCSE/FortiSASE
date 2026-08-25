@@ -17,5 +17,3 @@ weight: 5
 - /layouts/shortcodes/<insertFileName.html>
 - [Hugo Shortcodes Documentation] (https://gohugo.io/extras/shortcodes/)
 - Custom Shortcodes are referenced inline your markdowd
-- The [index.md](https://github.com/FortinetCloudCSE/UserRepo/blob/main/content/_index.md) page of this guide includes a shortcode for an image with embeded URLs (Created in diagrams.net)
-  - This shortcode example is included in your cloned repo at [/layouts/shortcodes/FTNThugoFlow.html](https://github.com/FortinetCloudCSE/UserRepo/blob/main/layouts/shortcodes/FTNThugoFlow.html)
